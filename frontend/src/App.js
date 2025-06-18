@@ -12,9 +12,7 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [user, setUser] = useState(null);
 
-  // Check if user is already logged in or handle OAuth redirect
   useEffect(() => {
-    // Check for OAuth token in URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const tokenFromUrl = urlParams.get('token');
     const errorFromUrl = urlParams.get('error');
@@ -22,14 +20,11 @@ const App = () => {
     if (tokenFromUrl) {
       setCookie('auth_token', tokenFromUrl);
       fetchUserProfile(tokenFromUrl);
-      // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (errorFromUrl) {
       setMessage(`Authentication error: ${errorFromUrl}`);
-      // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     } else {
-      // Check existing token
       const token = getCookie('auth_token');
       if (token) {
         fetchUserProfile(token);
@@ -37,7 +32,6 @@ const App = () => {
     }
   }, []);
 
-  // Cookie helper functions
   const setCookie = (name, value, days = 7) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     document.cookie = `${name}=${value}; expires=${expires}; path=/`;
@@ -54,7 +48,6 @@ const App = () => {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
   };
 
-  // Fetch user profile
   const fetchUserProfile = async (token) => {
     try {
       const response = await fetch('http://localhost:8000/api/profile', {
@@ -76,7 +69,6 @@ const App = () => {
     }
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -84,7 +76,6 @@ const App = () => {
     });
   };
 
-  // Handle regular login/signup
   const handleSubmit = async () => {
     setLoading(true);
     setMessage('');
@@ -133,13 +124,11 @@ const App = () => {
     }
   };
 
-  // Handle SSO login
   const handleSSOLogin = (provider) => {
     setLoading(true);
     window.location.href = `http://localhost:8000/api/auth/${provider}`;
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       const token = getCookie('auth_token');
@@ -159,14 +148,13 @@ const App = () => {
     }
   };
 
-  // If user is logged in, show dashboard
   if (user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-greenTheme-light to-greenTheme-dark flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
           <div className="text-center mb-6">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <User className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-greenTheme-light rounded-full flex items-center justify-center mx-auto mb-4">
+              <User className="w-10 h-10 text-greenTheme" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800">Welcome!</h2>
             <p className="text-gray-600 mt-2">You are successfully logged in</p>
@@ -191,12 +179,11 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-greenTheme-light to-greenTheme-dark flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <LogIn className="w-8 h-8 text-indigo-600" />
+          <div className="w-16 h-16 bg-greenTheme-light rounded-full flex items-center justify-center mx-auto mb-4">
+            <LogIn className="w-8 h-8 text-greenTheme" />
           </div>
           <h2 className="text-3xl font-bold text-gray-800">
             {isLogin ? 'Welcome Back' : 'Create Account'}
@@ -206,18 +193,16 @@ const App = () => {
           </p>
         </div>
 
-        {/* Message */}
         {message && (
           <div className={`p-3 rounded-lg mb-4 text-sm ${
             message.includes('successful') || message.includes('Logged out') 
-              ? 'bg-green-100 text-green-700' 
+              ? 'bg-greenTheme-light text-greenTheme' 
               : 'bg-red-100 text-red-700'
           }`}>
             {message}
           </div>
         )}
 
-        {/* SSO Buttons */}
         <div className="space-y-3 mb-6">
           <button
             onClick={() => handleSSOLogin('google')}
@@ -248,7 +233,6 @@ const App = () => {
           </button>
         </div>
 
-        {/* Divider */}
         <div className="relative mb-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
@@ -258,7 +242,6 @@ const App = () => {
           </div>
         </div>
 
-        {/* Form */}
         <div className="space-y-4">
           <div className="relative">
             <Mail className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
@@ -268,7 +251,7 @@ const App = () => {
               placeholder="Email address"
               value={formData.email}
               onChange={handleInputChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greenTheme focus:border-transparent"
             />
           </div>
 
@@ -280,7 +263,7 @@ const App = () => {
               placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greenTheme focus:border-transparent"
             />
           </div>
 
@@ -293,7 +276,7 @@ const App = () => {
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-greenTheme focus:border-transparent"
               />
             </div>
           )}
@@ -301,13 +284,12 @@ const App = () => {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 font-medium disabled:opacity-50"
+            className="w-full bg-greenTheme text-white py-3 px-4 rounded-lg hover:bg-greenTheme-dark transition duration-300 font-medium disabled:opacity-50"
           >
             {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Sign Up')}
           </button>
         </div>
 
-        {/* Toggle */}
         <div className="text-center mt-6">
           <p className="text-gray-600">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
@@ -317,7 +299,7 @@ const App = () => {
                 setFormData({ email: '', password: '', confirmPassword: '' });
                 setMessage('');
               }}
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="text-greenTheme hover:text-greenTheme-dark font-medium"
             >
               {isLogin ? 'Sign up' : 'Sign in'}
             </button>
